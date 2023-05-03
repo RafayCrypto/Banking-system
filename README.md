@@ -61,3 +61,42 @@ contract banking
     assert (balance[msg.sender] == previousSenderBalance - amount);
     }
 }
+
+
+// doing by modifier to restrict others addresses from trasnferring money to othe only admin can do thattt
+
+pragma solidity ^0.8.5;
+
+contract banking
+{
+    mapping(address => uint) balance;
+
+    modifier  onlyOwner
+    {
+        require(owner == msg.sender, "You are not the owner"); 
+        _;
+    }
+
+    function addBalance(uint toAdd) public returns (uint)
+    {
+        balance[msg.sender] += toAdd;
+        return balance[msg.sender];
+    }
+
+    function getBalance() public view returns(uint)
+    {
+        return balance[msg.sender];
+    }
+
+    function transfer(address reciver, uint amount) public onlyOwner {
+        require(balance[msg.sender] >= amount, "You have insuffiecent balance!");
+        require(msg.sender != reciver, "You can't be reciver or sender at a time");
+
+    uint previousSenderBalance = balance[msg.sender];
+
+        balance[msg.sender] -= amount;
+        balance[msg.sender] += amount;
+
+    assert (balance[msg.sender] == previousSenderBalance - amount);
+    }
+}
